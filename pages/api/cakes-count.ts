@@ -5,13 +5,11 @@ type Data = {
   name: string;
 };
 
-export default async function getAllCakes(
+export default async function getCakesCount(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  console.log(req.method);
+  const cake = await getSavedCakes();
 
-  const id = req.body.data;
-  const cake = await getCake(id);
   res.status(200).json(cake);
 }

@@ -22,12 +22,36 @@ export default function Home() {
   const { data: ingredientsList, error: errorList } = useFetch<
     IngredientProp[]
   >('/api/ingredients-count');
+  // const { data: dataCake, error: err } = usePost('/api/cake', {
+  //   data: 'Bolo de Chocolate',
+  // });
+  const { data: getCake, error: err2 } = useFetch('/api/cakes-count');
+
+  // const { data: postNewCake, error: err3 } = usePost('/api/new-cake', [
+  //   {
+  //     cake: 'Bolo de Caramelo',
+  //     ingrediente: 2,
+  //     quantidade: 200,
+  //   },
+  //   {
+  //     cake: 'Bolo de Caramelo',
+  //     ingrediente: 1,
+  //     quantidade: 2,
+  //   },
+  //   {
+  //     cake: 'Bolo de Caramelo',
+  //     ingrediente: 3,
+  //     quantidade: 200,
+  //   },
+  // ]);
+  // console.log('postNewCake', postNewCake);
+  // console.log('dataCake', dataCake);
+  console.log('getCake', getCake);
   console.log('ingredientsList', ingredientsList);
   const [list, setList] = useState([]);
   const [cakesList, setCakesList] = useState([]);
 
   // const [loading, setLoading] = useState(false);
-  // console.log('cakes', cakes);
 
   useEffect(() => {
     if (cakes && cakes.length > 0) {

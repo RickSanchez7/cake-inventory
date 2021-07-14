@@ -73,6 +73,7 @@ export const Title = styled.div<TitleProps>`
   opacity: ${({ open }) => (open ? 1 : 0)};
   transition: all 0.5s ease;
   white-space: nowrap;
+  display: ${({ open }) => (open ? '' : 'none')};
 `;
 
 export const NavList = styled.ul`

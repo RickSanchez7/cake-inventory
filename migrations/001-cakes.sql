@@ -10,7 +10,8 @@ CREATE TABLE Cake (
 
 CREATE TABLE Cake_name (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  nome_bolo TEXT
+  nome_bolo TEXT,
+  quantidade INTEGER
 );
 
 CREATE TABLE Ingredientes (
@@ -19,9 +20,9 @@ CREATE TABLE Ingredientes (
   unidade TEXT
 );
 
-INSERT INTO Cake_name (nome_bolo) VALUES ('Bolo de Chocolate');
-INSERT INTO Cake_name (nome_bolo) VALUES ('Bolo de cenoura');
-INSERT INTO Cake_name (nome_bolo) VALUES ('Bolo de morango');
+INSERT INTO Cake_name (nome_bolo, quantidade) VALUES ('Bolo de Chocolate', 2);
+INSERT INTO Cake_name (nome_bolo, quantidade) VALUES ('Bolo de cenoura', 2);
+INSERT INTO Cake_name (nome_bolo, quantidade) VALUES ('Bolo de morango', 1);
 
 INSERT INTO Ingredientes (nome_ingrediente, unidade) VALUES ('ovos', 'uni');
 INSERT INTO Ingredientes (nome_ingrediente, unidade) VALUES ('farinha', 'g');

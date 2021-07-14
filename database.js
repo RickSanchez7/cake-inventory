@@ -9,8 +9,11 @@ async function setup() {
     });
     await db.migrate({ force: true, migrationsPath: './migrations' });
 
-    const cake = await db.all('SELECT * FROM Cake');
-    console.log('all cakes', JSON.stringify(cake, null, 2));
+    const cake = await db.all(
+      'SELECT * FROM Cake_name WHERE Cake_name.quantidade > 0'
+    );
+    // console.log('all cakes', JSON.stringify(cake, null, 2));
+    console.log('all cakes', cake);
   } catch (error) {
     console.log('error', error);
   }
