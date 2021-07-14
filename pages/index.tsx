@@ -3,6 +3,7 @@ import Image from 'next/image';
 import styles from '../styles/Home.module.css';
 import { useFetch } from '../hooks/useFetch';
 import { v4 as uuidv4 } from 'uuid';
+import { useEffect, useState } from 'react';
 
 type CakeProp = {
   nome_bolo: string;
@@ -22,25 +23,27 @@ export default function Home() {
     IngredientProp[]
   >('/api/ingredients-count');
   console.log('ingredientsList', ingredientsList);
+  const [list, setList] = useState([]);
+  const [cakesList, setCakesList] = useState([]);
 
   // const [loading, setLoading] = useState(false);
   // console.log('cakes', cakes);
 
-  // useEffect(() => {
-  //   const fetchCakes = () => {
-  //     for (let cake of cakes) {
-  //       for (let ing in cake) {
-  //         if (ing !== 'id' && ing !== 'nome_bolo') {
-  //           console.log('ing', ing);
-  //           setIngredientes(prevIng => ({ ...prevIng, [ing]: cake[ing] }));
-  //         }
-  //       }
-  //     }
-  //   };
-  //   if (cakes && cakes.length > 0) {
-  //     fetchCakes();
-  //   }
-  // }, [cakes]);
+  useEffect(() => {
+    if (cakes && cakes.length > 0) {
+      let result = Object.values(
+        cakes.reduce((r, o) => {
+          r[o.nome_bolo] = r[o.nome_bolo] || {
+            Bolo: o.nome_bolo,
+            totalItemQuantity: 0,
+          };
+          r[o.nome_bolo].totalItemQuantity += 1;
+          return r;
+        }, {})
+      );
+      setCakesList(result);
+    }
+  }, [cakes]);
 
   console.log('cakes', cakes);
 
@@ -73,7 +76,7 @@ export default function Home() {
             );
           })}
         </div>
-        {cakes?.map(cake => {
+        {/* {cakes?.map(cake => {
           return (
             <div key={uuidv4()}>
               <h2>{cake.nome_bolo}</h2>
@@ -87,6 +90,15 @@ export default function Home() {
                     </p>
                   ) : null
                 )}
+            </div>
+          );
+        })} */}
+        {cakesList.map(c => {
+          return (
+            <div key={uuidv4()}>
+              <h2>
+                {c.Bolo}: {c.totalItemQuantity}
+              </h2>
             </div>
           );
         })}
