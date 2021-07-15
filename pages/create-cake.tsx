@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { useFetch } from '../hooks/useFetch';
+import { v4 as uuidv4 } from 'uuid';
 
 type DataProps = {
   id: number;
@@ -8,13 +9,25 @@ type DataProps = {
   unidade: string;
 };
 
+type FullCakeProps = {
+  cake?: string;
+  ingrediente?: string;
+  quantidade?: number;
+};
+
+type IngredienteProp = {
+  id?: number;
+  ingr?: string;
+};
+
 export default function CreateCake() {
   const [cake, setCake] = useState('');
   const [cakeName, setCakeName] = useState('');
-  const [fullCake, setFullCake] = useState([]);
-  const [ingrediente, setIngrediente] = useState({});
+  const [fullCake, setFullCake] = useState<FullCakeProps[]>([]);
+  const [ingrediente, setIngrediente] = useState<IngredienteProp>({});
 
-  const [quantidade, setQuantidade] = useState(0);
+  const [quantidade, setQuantidade] = useState('0');
+
   const { data: ingredients, error } = useFetch('/api/ingredients');
 
   console.log('fullCake', fullCake.length);
@@ -30,12 +43,12 @@ export default function CreateCake() {
       ...c,
       {
         cake: cakeName,
-        ingrediente: ingrediente.ingr,
+        ingrediente: ingrediente?.ingr,
         quantidade: Number(quantidade),
       },
     ]);
     setIngrediente({});
-    setQuantidade(0);
+    setQuantidade('0');
   };
 
   return (
@@ -59,7 +72,7 @@ export default function CreateCake() {
         Criar Nome
       </button>
       {fullCake.map(i => (
-        <div style={{ display: 'flex' }}>
+        <div style={{ display: 'flex' }} key={uuidv4()}>
           <p>{i.ingrediente}</p>
           <p>{i.quantidade}</p>
         </div>

@@ -17,12 +17,7 @@ export default async function newCakeFunc(
 
   let response = await newCakeName(cakeName);
   console.log('cakes', cakes);
-  let id: number;
-  if (response === 'OK') {
-    id = await getCakeByName(cakeName);
-  }
-
-  console.log('id', id);
+  let id = await getCakeByName(cakeName);
 
   if (id) {
     cakes.forEach(async c => {

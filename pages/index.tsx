@@ -22,10 +22,30 @@ export default function Home() {
   const { data: ingredientsList, error: errorList } = useFetch<
     IngredientProp[]
   >('/api/ingredients-count');
+  const { data: ingredients, error: error4 } =
+    useFetch<IngredientProp[]>('/api/ingredients');
   // const { data: dataCake, error: err } = usePost('/api/cake', {
   //   data: 'Bolo de Chocolate',
   // });
   const { data: getCake, error: err2 } = useFetch('/api/cakes-count');
+  const [cakeQuant, setCakeQuant] = useState(getCake);
+
+  const increaseQuant = id => {
+    setCakeQuant(
+      cakeQuant.map(c =>
+        c.id === id ? { ...c, quantidade: c.quantidade + 1 } : c
+      )
+    );
+  };
+  const decreaseQuant = id => {
+    setCakeQuant(
+      cakeQuant.map(c =>
+        c.id === id
+          ? { ...c, quantidade: c.quantidade === 0 ? 0 : c.quantidade - 1 }
+          : c
+      )
+    );
+  };
 
   // const { data: postNewCake, error: err3 } = usePost('/api/new-cake', [
   //   {
@@ -48,26 +68,27 @@ export default function Home() {
   // console.log('dataCake', dataCake);
   console.log('getCake', getCake);
   console.log('ingredientsList', ingredientsList);
-  const [list, setList] = useState([]);
+  const [list, setList] = useState(ingredientsList);
+  const [ingredientsArray, setIngredientsArray] = useState(ingredients || []);
   const [cakesList, setCakesList] = useState([]);
 
   // const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (cakes && cakes.length > 0) {
-      let result = Object.values(
-        cakes.reduce((r, o) => {
-          r[o.nome_bolo] = r[o.nome_bolo] || {
-            Bolo: o.nome_bolo,
-            totalItemQuantity: 0,
-          };
-          r[o.nome_bolo].totalItemQuantity += 1;
-          return r;
-        }, {})
-      );
-      setCakesList(result);
-    }
-  }, [cakes]);
+  // useEffect(() => {
+  //   if (cakes && cakes.length > 0) {
+  //     let result = Object.values(
+  //       cakes.reduce((r, o) => {
+  //         r[o.nome_bolo] = r[o.nome_bolo] || {
+  //           Bolo: o.nome_bolo,
+  //           totalItemQuantity: 0,
+  //         };
+  //         r[o.nome_bolo].totalItemQuantity += 1;
+  //         return r;
+  //       }, {})
+  //     );
+  //     setCakesList(result);
+  //   }
+  // }, [cakes]);
 
   console.log('cakes', cakes);
 
@@ -75,7 +96,7 @@ export default function Home() {
     return <p>Error</p>;
   }
 
-  if (!cakes) {
+  if (!cakes || !cakeQuant || !list) {
     return <p>Loading...</p>;
   }
   console.log(Object.keys(cakes[0]));
@@ -90,7 +111,9 @@ export default function Home() {
 
       <main className={styles.main}>
         <div>
-          {ingredientsList?.map(i => {
+          {list?.map(i => {
+            console.log(i);
+
             return (
               <div key={uuidv4()} style={{ display: 'flex' }}>
                 <p style={{ fontWeight: 'bold' }}>{i.nome_ingrediente}</p>
@@ -117,12 +140,14 @@ export default function Home() {
             </div>
           );
         })} */}
-        {cakesList.map(c => {
+        {cakeQuant?.map(c => {
           return (
-            <div key={uuidv4()}>
+            <div key={uuidv4()} style={{ display: 'flex' }}>
+              <button onClick={() => decreaseQuant(c.id)}>-</button>
               <h2>
-                {c.Bolo}: {c.totalItemQuantity}
+                {c.nome_bolo}: {c.quantidade}
               </h2>
+              <button onClick={() => increaseQuant(c.id)}>+</button>
             </div>
           );
         })}
@@ -143,13 +168,3 @@ export default function Home() {
     </div>
   );
 }
-
-// export async function getServerSideProps() {
-//   const { data } = await axios.get('/api/cakes');
-
-//   return {
-//     props: {
-//       cakes: data,
-//     },
-//   };
-// }
