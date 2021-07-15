@@ -2,6 +2,14 @@ import React from 'react';
 import { useState } from 'react';
 import { useFetch } from '../hooks/useFetch';
 import { v4 as uuidv4 } from 'uuid';
+import {
+  StyledButton,
+  StyledIngredientTitle,
+  StyledInput,
+  StyledInputsContainer,
+  StyledLabel,
+} from '../styles/style';
+import { IoMdCreate } from 'react-icons/io';
 
 type DataProps = {
   id: number;
@@ -53,24 +61,27 @@ export default function CreateCake() {
 
   return (
     <>
-      <div>Create Cake</div>
-      <label style={{ marginLeft: 10 }}>
-        <input
-          value={cake}
-          onChange={e => setCake(e.target.value)}
-          type='text'
-          placeholder='Bolo'
-        />
-      </label>
-      <button
-        onClick={() => {
-          setCakeName(cake);
-          setCake('');
-        }}
-        type='button'
-      >
-        Criar Nome
-      </button>
+      <StyledIngredientTitle>Criar Bolo</StyledIngredientTitle>
+      <StyledInputsContainer>
+        <StyledLabel>
+          <IoMdCreate />
+          <StyledInput
+            value={cake}
+            onChange={e => setCake(e.target.value)}
+            type='text'
+            placeholder='Bolo'
+          />
+        </StyledLabel>
+        <StyledButton
+          onClick={() => {
+            setCakeName(cake);
+            setCake('');
+          }}
+          type='button'
+        >
+          Criar Nome
+        </StyledButton>
+      </StyledInputsContainer>
       {fullCake.map(i => (
         <div style={{ display: 'flex' }} key={uuidv4()}>
           <p>{i.ingrediente}</p>

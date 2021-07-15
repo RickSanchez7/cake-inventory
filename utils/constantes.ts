@@ -107,7 +107,7 @@ export const getIngredientsCount = async () => {
   });
 
   return await db.all(
-    'SELECT Ingredientes.nome_ingrediente, Ingredientes.unidade, SUM(Cake.quantidade) as quantidade FROM ((Cake INNER JOIN Ingredientes ON Cake.ingredientes_id = Ingredientes.id) INNER JOIN Cake_name ON Cake.nome_id = Cake_name.id) WHERE Cake_name.quantidade > 0 GROUP BY Ingredientes.nome_ingrediente'
+    'SELECT Ingredientes.nome_ingrediente, Ingredientes.unidade, SUM(Cake.quantidade * Cake_name.quantidade) as quantidade FROM ((Cake INNER JOIN Ingredientes ON Cake.ingredientes_id = Ingredientes.id) INNER JOIN Cake_name ON Cake.nome_id = Cake_name.id) WHERE Cake_name.quantidade > 0 GROUP BY Ingredientes.nome_ingrediente'
   );
 };
 
@@ -136,6 +136,23 @@ export const deleteIngredient = async (id: number) => {
 
   try {
     await db.all('DELETE FROM Ingredientes WHERE id = ?', [id]);
+    return 'OK';
+  } catch (error) {
+    return 'NotOK';
+  }
+};
+
+export const updateQuantity = async (id: number, count: number) => {
+  const db = await open({
+    filename: './mydb.sqlite',
+    driver: sqlite3.Database,
+  });
+
+  try {
+    await db.all('UPDATE Cake_name SET quantidade = ? WHERE id = ?', [
+      count,
+      id,
+    ]);
     return 'OK';
   } catch (error) {
     return 'NotOK';

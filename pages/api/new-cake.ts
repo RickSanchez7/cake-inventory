@@ -20,7 +20,7 @@ export default async function newCakeFunc(
   let id = await getCakeByName(cakeName);
 
   if (id) {
-    cakes.forEach(async c => {
+    cakes.forEach(async (c: any) => {
       await newCake(id, c.ingrediente, c.quantidade);
     });
   }

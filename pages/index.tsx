@@ -4,17 +4,27 @@ import styles from '../styles/Home.module.css';
 import { useFetch } from '../hooks/useFetch';
 import { v4 as uuidv4 } from 'uuid';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { trigger } from 'swr';
 
 type CakeProp = {
   nome_bolo: string;
   id: number;
-  index: any;
+  nome_ingrediente: string;
+  quantidade: number;
+  unidadade: string;
+};
+
+type CakesProp = {
+  nome_bolo: string;
+  id: number;
+  quantidade: number;
 };
 
 type IngredientProp = {
-  nome_ingrediente: string;
-  quantidade: number;
-  unidade: string;
+  nome_ingrediente?: string;
+  quantidade?: number;
+  unidade?: string;
 };
 
 export default function Home() {
@@ -28,16 +38,52 @@ export default function Home() {
   //   data: 'Bolo de Chocolate',
   // });
   const { data: getCake, error: err2 } = useFetch('/api/cakes-count');
-  const [cakeQuant, setCakeQuant] = useState(getCake);
+  const [cakeQuant, setCakeQuant] = useState<CakesProp[]>([]);
 
-  const increaseQuant = id => {
+  const [list, setList] = useState<IngredientProp[]>([]);
+  const [ingredientsArray, setIngredientsArray] = useState(ingredients || []);
+  const [cakesList, setCakesList] = useState<CakeProp[]>([]);
+
+  const increaseQuant = async (id: number) => {
     setCakeQuant(
       cakeQuant.map(c =>
         c.id === id ? { ...c, quantidade: c.quantidade + 1 } : c
       )
     );
+
+    const quantity = cakeQuant.filter(x => x.id === id)[0].quantidade;
+    // console.log('f', filteredCake);
+
+    const { data } = await axios.post('/api/update-quantity', {
+      id,
+      quantity: quantity + 1,
+    });
+
+    console.log();
+
+    if (data === 'OK') {
+      trigger('/api/ingredients-count');
+    }
+
+    // const cakeIngredients = cakesList?.filter(
+    //   y => y.nome_bolo === filteredCake
+    // );
+    // console.log('c', cakeIngredients);
+
+    // const cakeIngredientsLength = cakeIngredients?.length;
+    // const listLength = list.length;
+    // console.log('length', length);
+
+    // for(let i = 0; i < listLength; i++ ) {
+    //   // for(let j = 0; j < cakeIngredientsLength; j++) {
+    //   //   if(list[i].nome_ingrediente === cakeIngredients[j].nome_ingrediente) {
+    //   //     setCakesList(prevVal => [...prevVal{...prevVal, quantidade: }])
+    //   //   }
+    //   // }
+    //   cakeIngredients.map(x => x.)
+    // }
   };
-  const decreaseQuant = id => {
+  const decreaseQuant = async (id: number) => {
     setCakeQuant(
       cakeQuant.map(c =>
         c.id === id
@@ -45,50 +91,41 @@ export default function Home() {
           : c
       )
     );
+
+    const quantity = cakeQuant.filter(x => x.id === id)[0].quantidade;
+    // console.log('f', filteredCake);
+
+    const { data } = await axios.post('/api/update-quantity', {
+      id,
+      quantity: quantity - 1,
+    });
+
+    console.log();
+
+    if (data === 'OK') {
+      trigger('/api/ingredients-count');
+    }
   };
 
-  // const { data: postNewCake, error: err3 } = usePost('/api/new-cake', [
-  //   {
-  //     cake: 'Bolo de Caramelo',
-  //     ingrediente: 2,
-  //     quantidade: 200,
-  //   },
-  //   {
-  //     cake: 'Bolo de Caramelo',
-  //     ingrediente: 1,
-  //     quantidade: 2,
-  //   },
-  //   {
-  //     cake: 'Bolo de Caramelo',
-  //     ingrediente: 3,
-  //     quantidade: 200,
-  //   },
-  // ]);
-  // console.log('postNewCake', postNewCake);
-  // console.log('dataCake', dataCake);
+  useEffect(() => {
+    setCakeQuant(getCake);
+  }, [getCake]);
+
+  useEffect(() => {
+    if (cakes) {
+      setCakesList(cakes);
+    }
+  }, [cakes]);
+
   console.log('getCake', getCake);
   console.log('ingredientsList', ingredientsList);
-  const [list, setList] = useState(ingredientsList);
-  const [ingredientsArray, setIngredientsArray] = useState(ingredients || []);
-  const [cakesList, setCakesList] = useState([]);
+  console.log('cakeQuant', cakeQuant);
 
-  // const [loading, setLoading] = useState(false);
-
-  // useEffect(() => {
-  //   if (cakes && cakes.length > 0) {
-  //     let result = Object.values(
-  //       cakes.reduce((r, o) => {
-  //         r[o.nome_bolo] = r[o.nome_bolo] || {
-  //           Bolo: o.nome_bolo,
-  //           totalItemQuantity: 0,
-  //         };
-  //         r[o.nome_bolo].totalItemQuantity += 1;
-  //         return r;
-  //       }, {})
-  //     );
-  //     setCakesList(result);
-  //   }
-  // }, [cakes]);
+  useEffect(() => {
+    if (ingredientsList) {
+      setList(ingredientsList);
+    }
+  }, [ingredientsList]);
 
   console.log('cakes', cakes);
 
@@ -96,7 +133,7 @@ export default function Home() {
     return <p>Error</p>;
   }
 
-  if (!cakes || !cakeQuant || !list) {
+  if (!cakes) {
     return <p>Loading...</p>;
   }
   console.log(Object.keys(cakes[0]));
@@ -112,8 +149,6 @@ export default function Home() {
       <main className={styles.main}>
         <div>
           {list?.map(i => {
-            console.log(i);
-
             return (
               <div key={uuidv4()} style={{ display: 'flex' }}>
                 <p style={{ fontWeight: 'bold' }}>{i.nome_ingrediente}</p>
@@ -168,3 +203,41 @@ export default function Home() {
     </div>
   );
 }
+
+// const { data: postNewCake, error: err3 } = usePost('/api/new-cake', [
+//   {
+//     cake: 'Bolo de Caramelo',
+//     ingrediente: 2,
+//     quantidade: 200,
+//   },
+//   {
+//     cake: 'Bolo de Caramelo',
+//     ingrediente: 1,
+//     quantidade: 2,
+//   },
+//   {
+//     cake: 'Bolo de Caramelo',
+//     ingrediente: 3,
+//     quantidade: 200,
+//   },
+// ]);
+// console.log('postNewCake', postNewCake);
+// console.log('dataCake', dataCake);
+
+// const [loading, setLoading] = useState(false);
+
+// useEffect(() => {
+//   if (cakes && cakes.length > 0) {
+//     let result = Object.values(
+//       cakes.reduce((r, o) => {
+//         r[o.nome_bolo] = r[o.nome_bolo] || {
+//           Bolo: o.nome_bolo,
+//           totalItemQuantity: 0,
+//         };
+//         r[o.nome_bolo].totalItemQuantity += 1;
+//         return r;
+//       }, {})
+//     );
+//     setCakesList(result);
+//   }
+// }, [cakes]);
