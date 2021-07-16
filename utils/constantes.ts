@@ -83,7 +83,9 @@ export const getSavedCakes = async () => {
   //   `SELECT Cake.id, Cake_name.nome_bolo, Ingredientes.nome_ingrediente, Ingredientes.unidade, Cake.quantidade FROM ((Cake INNER JOIN Ingredientes ON Cake.ingredientes_id = Ingredientes.id) INNER JOIN Cake_name ON Cake.nome_id = Cake_name.id) WHERE Cake_name.nome_bolo = ?`,
   //   [id]
   // );
-  return await db.all('SELECT * FROM Cake_name WHERE Cake_name.quantidade > 0');
+  return await db.all(
+    'SELECT * FROM Cake_name WHERE Cake_name.quantidade >= 0'
+  );
 };
 
 export const getCakes = async () => {
@@ -153,6 +155,20 @@ export const updateQuantity = async (id: number, count: number) => {
       count,
       id,
     ]);
+    return 'OK';
+  } catch (error) {
+    return 'NotOK';
+  }
+};
+
+export const deleteCake = async (cakeName: string) => {
+  const db = await open({
+    filename: './mydb.sqlite',
+    driver: sqlite3.Database,
+  });
+
+  try {
+    await db.all('DELETE FROM Cake_name WHERE nome_bolo = ?', [cakeName]);
     return 'OK';
   } catch (error) {
     return 'NotOK';

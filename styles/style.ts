@@ -27,7 +27,7 @@ export const StyledInputsContainer = styled.div`
 `;
 
 export const StyledInput = styled.input`
-  width: 200px;
+  width: 180px;
   margin-left: 5px;
   border: none;
   outline: none;
@@ -44,12 +44,12 @@ export const StyledLabel = styled.label`
   padding: 5px;
   border: 1px solid #000;
   border-radius: 5px;
-  width: 200px;
+  width: 190px;
   margin-right: 10px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 
   @media screen and (max-width: 768px) {
-    width: 180px;
+    width: 150px;
   }
 
   @media screen and (max-width: 768px) {
@@ -119,6 +119,9 @@ export const StyledDeleteButton = styled.button`
   border-radius: 5px;
   margin: 2px auto;
   background-color: #ff0000;
+  align-items: center;
+  justify-content: center;
+  max-height: 30px;
   color: #fff;
   font-size: 14px;
   font-family: Poppins;
@@ -182,5 +185,64 @@ export const StyledTr = styled.tr`
   &:nth-child(even) {
     /* background-color: #f2f2f2; */
     background-color: #f0f8ff;
+  }
+`;
+
+export const StyledTableCake = styled.table`
+  border-spacing: 0;
+  /* border: 1px solid #c0c0c0; */
+  border: 1px solid #7cb9e8;
+  margin: 15px 30px;
+  width: 400px;
+  transition: all 0.2 linear;
+
+  @media screen and (max-width: 768px) {
+    width: 280px;
+  }
+`;
+
+export const StyledTrTitleCake = styled.tr`
+  /* background-color: #c0c0c0; */
+  /* background-color: #7cb9e8; */
+  background-color: #7cb9e8;
+  transition: all 0.2 linear;
+`;
+
+export const StyledTBody = styled.tbody`
+  overflow-y: scroll;
+  /* height: 250px; */
+`;
+
+export const StyledAddButton = styled.button`
+  display: flex;
+  padding: 5px 12px;
+  border-radius: 5px;
+  margin: 2px auto;
+  background-color: #32cd32;
+  align-items: center;
+  justify-content: center;
+  max-height: 30px;
+  color: #fff;
+  font-size: 14px;
+  font-family: Poppins;
+  border: none;
+  transition: all 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+
+  &:hover {
+    background-color: #228b22;
+  }
+`;
+
+export const StyledTablesContainer = styled.div`
+  display: flex;
+  width: 1000px;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+    width: 300px;
   }
 `;

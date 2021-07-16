@@ -100,8 +100,6 @@ export default function Home() {
       quantity: quantity - 1,
     });
 
-    console.log();
-
     if (data === 'OK') {
       trigger('/api/ingredients-count');
     }

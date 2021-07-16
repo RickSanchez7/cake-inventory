@@ -1,15 +1,30 @@
 import React from 'react';
 import { useState } from 'react';
 import { useFetch } from '../hooks/useFetch';
-import { v4 as uuidv4 } from 'uuid';
+import { IoMdCreate } from 'react-icons/io';
+import { FaTrashAlt } from 'react-icons/fa';
+import { BiSearchAlt2 } from 'react-icons/bi';
+import { MdAdd } from 'react-icons/md';
+import { RiHandCoinFill } from 'react-icons/ri';
+import { toast } from 'react-toastify';
+
 import {
+  StyledAddButton,
   StyledButton,
+  StyledDeleteButton,
   StyledIngredientTitle,
   StyledInput,
   StyledInputsContainer,
   StyledLabel,
+  StyledTableCake,
+  StyledTablesContainer,
+  StyledTBody,
+  StyledThBody,
+  StyledThTitle,
+  StyledTr,
+  StyledTrTitleCake,
 } from '../styles/style';
-import { IoMdCreate } from 'react-icons/io';
+import axios from 'axios';
 
 type DataProps = {
   id: number;
@@ -19,8 +34,9 @@ type DataProps = {
 
 type FullCakeProps = {
   cake?: string;
-  ingrediente?: string;
-  quantidade?: number;
+  ingredient?: string;
+  quantity?: number;
+  ingredientId: number;
 };
 
 type IngredienteProp = {
@@ -29,34 +45,81 @@ type IngredienteProp = {
 };
 
 export default function CreateCake() {
-  const [cake, setCake] = useState('');
   const [cakeName, setCakeName] = useState('');
   const [fullCake, setFullCake] = useState<FullCakeProps[]>([]);
-  const [ingrediente, setIngrediente] = useState<IngredienteProp>({});
-
-  const [quantidade, setQuantidade] = useState('0');
+  const [quantidade, setQuantidade] = useState('');
+  const [filter, setFilter] = useState('');
 
   const { data: ingredients, error } = useFetch('/api/ingredients');
 
-  console.log('fullCake', fullCake.length);
+  const notify = () => {};
 
-  const handleCake = () => {};
+  const handleCake = async () => {
+    if (!cakeName) return;
+    if (fullCake.length === 0) return;
 
-  const handlePost = () => {
-    console.log('post handled');
+    try {
+      const { data } = await axios.post('api/new-cake', {
+        data: { cake_name: cakeName, ingredients: fullCake },
+      });
+      if (data === 'OK') {
+        setFullCake([]);
+        setCakeName('');
+        toast.success('🚀 Bolo criado com Sucesso!', {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+    } catch (error) {
+      toast.error('🧨 Ocorreu um erro!', {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
   };
 
-  const handleIngredient = () => {
+  const handleCakeDelete = async () => {
+    console.log('post handled');
+
+    const response = await axios.delete('api/cake', {
+      data: { cake_name: 'Bolo de cenoura' },
+    });
+
+    console.log('deletePost', response);
+  };
+
+  const handleIngredient = (id: number, ingr: string) => {
+    if (typeof Number(quantidade) !== 'number' || Number(quantidade) < 1)
+      return;
+
+    // Checks if ingredient is already there
+    const checkIngredient = fullCake.find(x => x.ingredient === ingr);
+    if (checkIngredient) return;
+
     setFullCake(c => [
       ...c,
       {
-        cake: cakeName,
-        ingrediente: ingrediente?.ingr,
-        quantidade: Number(quantidade),
+        ingredientId: id,
+        ingredient: ingr,
+        quantity: Number(quantidade),
       },
     ]);
-    setIngrediente({});
-    setQuantidade('0');
+    setQuantidade('');
+  };
+
+  const deleteIngredient = (ing: string | undefined) => {
+    if (!ing) return;
+    setFullCake(ingr => ingr.filter(x => x.ingredient !== ing));
   };
 
   return (
@@ -66,77 +129,97 @@ export default function CreateCake() {
         <StyledLabel>
           <IoMdCreate />
           <StyledInput
-            value={cake}
-            onChange={e => setCake(e.target.value)}
+            value={cakeName}
+            onChange={e => setCakeName(e.target.value)}
             type='text'
-            placeholder='Bolo'
+            placeholder='Nome do Bolo'
           />
         </StyledLabel>
-        <StyledButton
-          onClick={() => {
-            setCakeName(cake);
-            setCake('');
-          }}
-          type='button'
-        >
-          Criar Nome
+        <StyledButton onClick={handleCake} type='button'>
+          Criar Bolo
         </StyledButton>
       </StyledInputsContainer>
-      {fullCake.map(i => (
-        <div style={{ display: 'flex' }} key={uuidv4()}>
-          <p>{i.ingrediente}</p>
-          <p>{i.quantidade}</p>
-        </div>
-      ))}
 
-      {cakeName ? (
-        <>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <h2>{cakeName}</h2>
-            <button
-              style={{ marginLeft: 5, color: 'red', height: 20 }}
-              onClick={() => setCakeName('')}
-            >
-              Apagar Bolo
-            </button>
-          </div>
-          <button onClick={handlePost}>Criar Bolo</button>
-          <div>
-            <input
-              type='text'
-              value={quantidade}
-              placeholder='Quantidade'
-              onChange={e => setQuantidade(e.target.value)}
-            />
-            <button onClick={handleIngredient}>Criar Ingrediente</button>
-            {ingrediente.ingr && <p>{ingrediente.ingr}</p>}
-          </div>
-        </>
-      ) : null}
-      <div style={{ marginTop: 10 }}>
-        {ingredients?.map((i: DataProps) => {
-          return (
-            <div
-              key={i.id}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                height: 40,
-              }}
-            >
-              <h3>{i.nome_ingrediente}</h3>
-              <p style={{ marginLeft: 5 }}>{i.unidade}</p>
-              <button
-                onClick={() =>
-                  setIngrediente({ ingr: i.nome_ingrediente, id: i.id })
-                }
-              >
-                Adicionar
-              </button>
-            </div>
-          );
-        })}
-      </div>
+      <StyledInputsContainer>
+        <StyledLabel>
+          <RiHandCoinFill />
+          <StyledInput
+            type='text'
+            value={quantidade}
+            placeholder='Quantidade'
+            onChange={e => setQuantidade(e.target.value)}
+          />
+          {/* {ingrediente.ingr && <p>{ingrediente.ingr}</p>} */}
+        </StyledLabel>
+        <StyledLabel>
+          <BiSearchAlt2 />
+          <StyledInput
+            type='text'
+            value={filter}
+            placeholder='Filtro'
+            onChange={e => setFilter(e.target.value)}
+          />
+        </StyledLabel>
+      </StyledInputsContainer>
+      <StyledTablesContainer>
+        <StyledTableCake>
+          <thead>
+            <StyledTrTitleCake>
+              <StyledThTitle>Ingredientes</StyledThTitle>
+              <StyledThTitle>Unidade de Medida</StyledThTitle>
+              <StyledThTitle>Acções</StyledThTitle>
+            </StyledTrTitleCake>
+          </thead>
+          <StyledTBody>
+            {ingredients
+              ?.filter((d: DataProps) => d.nome_ingrediente.includes(filter))
+              .map((i: DataProps) => {
+                return (
+                  <StyledTr key={i.id}>
+                    <StyledThBody>{i.nome_ingrediente}</StyledThBody>
+                    <StyledThBody>{i.unidade}</StyledThBody>
+                    <StyledThBody>
+                      <StyledAddButton
+                        onClick={() =>
+                          handleIngredient(i.id, i.nome_ingrediente)
+                        }
+                      >
+                        <MdAdd />
+                      </StyledAddButton>
+                    </StyledThBody>
+                  </StyledTr>
+                );
+              })}
+          </StyledTBody>
+        </StyledTableCake>
+
+        <StyledTableCake>
+          <thead>
+            <StyledTrTitleCake>
+              <StyledThTitle>Ingredientes</StyledThTitle>
+              <StyledThTitle>Quantidade</StyledThTitle>
+              <StyledThTitle>Acções</StyledThTitle>
+            </StyledTrTitleCake>
+          </thead>
+          <StyledTBody>
+            {fullCake.map((i: FullCakeProps) => {
+              return (
+                <StyledTr key={i.ingredientId}>
+                  <StyledThBody>{i.ingredient}</StyledThBody>
+                  <StyledThBody>{i.quantity}</StyledThBody>
+                  <StyledThBody>
+                    <StyledDeleteButton
+                      onClick={() => deleteIngredient(i.ingredient)}
+                    >
+                      <FaTrashAlt />
+                    </StyledDeleteButton>
+                  </StyledThBody>
+                </StyledTr>
+              );
+            })}
+          </StyledTBody>
+        </StyledTableCake>
+      </StyledTablesContainer>
     </>
   );
 }

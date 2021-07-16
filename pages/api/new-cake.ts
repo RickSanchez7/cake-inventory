@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { newCakeName, newCake, getCakeByName } from '../../utils/constantes';
-import cakename from './cake-name';
 
 type Data = {
   name: string;
@@ -10,20 +9,20 @@ export default async function newCakeFunc(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  let cakes = req.body;
-  console.log('cakes', cakes);
-  let cakeName = cakes[0].cake;
-  console.log(cakeName);
+  const cake = req.body;
+  const cakeName = cake.data.cake_name;
 
-  let response = await newCakeName(cakeName);
-  console.log('cakes', cakes);
-  let id = await getCakeByName(cakeName);
+  try {
+    await newCakeName(cakeName);
+    let id = await getCakeByName(cakeName);
 
-  if (id) {
-    cakes.forEach(async (c: any) => {
-      await newCake(id, c.ingrediente, c.quantidade);
-    });
+    if (id) {
+      cake.data.ingredients.forEach(async (c: any) => {
+        await newCake(id, c.ingredientId, c.quantity);
+      });
+    }
+    res.status(200).json('OK');
+  } catch (error) {
+    res.status(400).json('NotOk');
   }
-
-  res.status(200).json('Ok');
 }
