@@ -73,7 +73,7 @@ export default function CreateCake(props: Props) {
         setCakeName('');
         toast.success('🚀 Bolo criado com Sucesso!', {
           position: toast.POSITION.TOP_CENTER,
-          autoClose: 5000,
+          autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
@@ -84,7 +84,7 @@ export default function CreateCake(props: Props) {
     } catch (error) {
       toast.error('🧨 Ocorreu um erro!', {
         position: toast.POSITION.TOP_CENTER,
-        autoClose: 5000,
+        autoClose: 3000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,

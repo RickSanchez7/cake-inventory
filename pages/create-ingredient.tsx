@@ -24,6 +24,7 @@ import {
   StyledTrTitle,
 } from '../styles/style';
 import Loader from 'react-loader-spinner';
+import { openDB } from '../src/openDB';
 
 type DataProps = {
   id: number;
@@ -40,7 +41,10 @@ export default function CreateIngredient(props: Props) {
   const [uni, setUni] = useState('g');
   const [filter, setFilter] = useState('');
 
-  const { data, error, isLoading } = useFetch('/api/ingredients');
+  const { data, error, isLoading } = useFetch(
+    '/api/ingredients',
+    props.ingredients
+  );
 
   const handleClick = async () => {
     if (!ingredient) {
@@ -57,7 +61,7 @@ export default function CreateIngredient(props: Props) {
       setUni('g');
       toast.success('🚀 Ingrediente criado com Sucesso!', {
         position: toast.POSITION.TOP_CENTER,
-        autoClose: 5000,
+        autoClose: 3000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -67,7 +71,7 @@ export default function CreateIngredient(props: Props) {
     } else {
       toast.error('🧨 Ocorreu um erro!', {
         position: toast.POSITION.TOP_CENTER,
-        autoClose: 5000,
+        autoClose: 3000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -159,17 +163,23 @@ export default function CreateIngredient(props: Props) {
   );
 }
 
-// export async function getStaticProps() {
-//   const res = await fetch(
-//     `${
-//       process.env.VERCEL_URL
-//         ? 'https://' + process.env.VERCEL_URL
-//         : 'http://localhost:3000'
-//     }/api/ingredients`
-//   );
-//   const ingredients = await res.json();
+export async function getStaticProps() {
+  // const res = await fetch(
+  //   `${
+  //     process.env.VERCEL_URL
+  //       ? 'https://' + process.env.VERCEL_URL
+  //       : 'http://localhost:3000'
+  //   }/api/ingredients`
+  // );
+  // const ingredients = await res.json();
 
-//   return {
-//     props: { ingredients },
-//   };
-// }
+  const db = await openDB();
+
+  const ingredients = await db.all('SELECT * FROM Ingredientes');
+
+  console.log(ingredients);
+
+  return {
+    props: { ingredients },
+  };
+}
