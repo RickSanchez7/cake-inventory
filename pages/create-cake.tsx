@@ -1,12 +1,13 @@
-import React from 'react';
-import { useState } from 'react';
-import { useFetch } from '../hooks/useFetch';
+import React, { useState } from 'react';
+import axios from 'axios';
 import { IoMdCreate } from 'react-icons/io';
 import { FaTrashAlt } from 'react-icons/fa';
 import { BiSearchAlt2 } from 'react-icons/bi';
 import { MdAdd } from 'react-icons/md';
 import { RiHandCoinFill } from 'react-icons/ri';
 import { toast } from 'react-toastify';
+
+import { useFetch } from '../hooks/useFetch';
 
 import {
   StyledAddButton,
@@ -16,6 +17,7 @@ import {
   StyledInput,
   StyledInputsContainer,
   StyledLabel,
+  StyledLoaderContainer,
   StyledTableCake,
   StyledTablesContainer,
   StyledTBody,
@@ -24,12 +26,18 @@ import {
   StyledTr,
   StyledTrTitleCake,
 } from '../styles/style';
-import axios from 'axios';
+import useSWR from 'swr';
+import Loader from 'react-loader-spinner';
+import { SmallTable } from '../components/SmallTable';
 
 type DataProps = {
   id: number;
   nome_ingrediente: string;
   unidade: string;
+};
+
+type Props = {
+  ingredients: DataProps;
 };
 
 type FullCakeProps = {
@@ -44,15 +52,17 @@ type IngredienteProp = {
   ingr?: string;
 };
 
-export default function CreateCake() {
+export default function CreateCake(props: Props) {
   const [cakeName, setCakeName] = useState('');
   const [fullCake, setFullCake] = useState<FullCakeProps[]>([]);
   const [quantidade, setQuantidade] = useState('');
   const [filter, setFilter] = useState('');
 
-  const { data: ingredients, error } = useFetch('/api/ingredients');
-
-  const notify = () => {};
+  const {
+    data: ingredients,
+    error,
+    isLoading,
+  } = useFetch('/api/ingredients', props.ingredients);
 
   const handleCake = async () => {
     if (!cakeName) return;
@@ -88,16 +98,6 @@ export default function CreateCake() {
     }
   };
 
-  const handleCakeDelete = async () => {
-    console.log('post handled');
-
-    const response = await axios.delete('api/cake', {
-      data: { cake_name: 'Bolo de cenoura' },
-    });
-
-    console.log('deletePost', response);
-  };
-
   const handleIngredient = (id: number, ingr: string) => {
     if (typeof Number(quantidade) !== 'number' || Number(quantidade) < 1)
       return;
@@ -121,6 +121,14 @@ export default function CreateCake() {
     if (!ing) return;
     setFullCake(ingr => ingr.filter(x => x.ingredient !== ing));
   };
+
+  if (isLoading) {
+    return (
+      <StyledLoaderContainer>
+        <Loader type='Puff' color='#00BFFF' height={80} width={80} />
+      </StyledLoaderContainer>
+    );
+  }
 
   return (
     <>
@@ -177,7 +185,9 @@ export default function CreateCake() {
                 return (
                   <StyledTr key={i.id}>
                     <StyledThBody>{i.nome_ingrediente}</StyledThBody>
-                    <StyledThBody>{i.unidade}</StyledThBody>
+                    <StyledThBody>
+                      {i.unidade === 'uni' ? 'unidade' : i.unidade}
+                    </StyledThBody>
                     <StyledThBody>
                       <StyledAddButton
                         onClick={() =>
@@ -222,4 +232,15 @@ export default function CreateCake() {
       </StyledTablesContainer>
     </>
   );
+}
+
+export async function getStaticProps() {
+  const res = await fetch(
+    `${process.env.VERCEL_URL || 'http://localhost:3000'}/api/ingredients`
+  );
+  const ingredients = await res.json();
+
+  return {
+    props: { ingredients },
+  };
 }

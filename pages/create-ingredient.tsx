@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import { useState } from 'react';
 import { useFetch } from '../hooks/useFetch';
 import { trigger } from 'swr';
 import { BiSearchAlt2 } from 'react-icons/bi';
 import { FaTrashAlt } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 
 import {
   StyledButton,
@@ -15,6 +15,7 @@ import {
   StyledInput,
   StyledInputsContainer,
   StyledLabel,
+  StyledLoaderContainer,
   StyledSelect,
   StyledTable,
   StyledThBody,
@@ -22,6 +23,7 @@ import {
   StyledTr,
   StyledTrTitle,
 } from '../styles/style';
+import Loader from 'react-loader-spinner';
 
 type DataProps = {
   id: number;
@@ -29,12 +31,19 @@ type DataProps = {
   unidade: string;
 };
 
-export default function CreateIngredient() {
+type Props = {
+  ingredients: DataProps;
+};
+
+export default function CreateIngredient(props: Props) {
   const [ingredient, setIngredient] = useState('');
   const [uni, setUni] = useState('g');
   const [filter, setFilter] = useState('');
 
-  const { data, error } = useFetch('/api/ingredients');
+  const { data, error, isLoading } = useFetch(
+    '/api/ingredients',
+    props.ingredients
+  );
 
   const handleClick = async (e: any) => {
     if (!ingredient) {
@@ -49,6 +58,25 @@ export default function CreateIngredient() {
       trigger('/api/ingredients');
       setIngredient('');
       setUni('g');
+      toast.success('🚀 Ingrediente criado com Sucesso!', {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else {
+      toast.error('🧨 Ocorreu um erro!', {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
@@ -63,8 +91,12 @@ export default function CreateIngredient() {
     }
   };
 
-  if (!data) {
-    return '...loading';
+  if (isLoading) {
+    return (
+      <StyledLoaderContainer>
+        <Loader type='Puff' color='#00BFFF' height={80} width={80} />
+      </StyledLoaderContainer>
+    );
   }
 
   return (
@@ -126,22 +158,17 @@ export default function CreateIngredient() {
             ))}
         </tbody>
       </StyledTable>
-      {/* {data?.map((i: DataProps) => {
-        return (
-          <div key={i.id}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <h3>{i.nome_ingrediente}</h3>
-              <p style={{ marginLeft: 5 }}>{i.unidade}</p>
-              <button
-                onClick={() => deleteIngredient(i.id)}
-                style={{ marginLeft: 5, color: 'red' }}
-              >
-                delete
-              </button>
-            </div>
-          </div>
-        );
-      })} */}
     </StyledIngredientsContainer>
   );
+}
+
+export async function getStaticProps() {
+  const res = await fetch(
+    `${process.env.VERCEL_URL || 'http://localhost:3000'}/api/ingredients`
+  );
+  const ingredients = await res.json();
+
+  return {
+    props: { ingredients },
+  };
 }

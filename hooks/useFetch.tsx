@@ -1,12 +1,11 @@
 import useSWR from 'swr';
 import axios from 'axios';
 
-export function useFetch<Data = any>(url: string) {
-  const { data, error } = useSWR<Data>(url, async url => {
-    const { data } = await axios.get(url);
+export function useFetch<Data = any>(
+  url: string,
+  initialData: any = undefined
+) {
+  const { data, error } = useSWR<Data>(url, { initialData });
 
-    return data;
-  });
-
-  return { data, error };
+  return { data, error, isLoading: !error && !data };
 }

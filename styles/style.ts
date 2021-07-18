@@ -1,5 +1,12 @@
 import styled from 'styled-components';
 
+export const StyledLoaderContainer = styled.div`
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 export const StyledIngredientsContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -135,9 +142,30 @@ export const StyledDeleteButton = styled.button`
   }
 `;
 
+export const StyledRemoveButton = styled.button`
+  display: flex;
+  padding: 5px 12px;
+  border-radius: 5px;
+  margin: 2px auto;
+  background-color: #fff44f;
+  align-items: center;
+  justify-content: center;
+  max-height: 30px;
+  color: #fff;
+  font-size: 14px;
+  font-family: Poppins;
+  border: none;
+  transition: all 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+
+  &:hover {
+    background-color: #ffdf00;
+  }
+`;
+
 export const StyledTable = styled.table`
   border-spacing: 0;
-  /* border: 1px solid #c0c0c0; */
   border: 1px solid #7cb9e8;
   margin: 15px 30px;
   width: 750px;
@@ -149,14 +177,11 @@ export const StyledTable = styled.table`
 `;
 
 export const StyledTrTitle = styled.tr`
-  /* background-color: #c0c0c0; */
   background-color: #7cb9e8;
   transition: all 0.2 linear;
 `;
 
 export const StyledThTitle = styled.th`
-  /* background-color: #c0c0c0; */
-  /* background-color: #7cb9e8; */
   width: 250px;
   height: 35px;
   color: #505050;
@@ -172,7 +197,6 @@ export const StyledThBody = styled.th`
   color: #505050;
   font-family: Poppins;
   font-weight: 300;
-  /* border-right: 1px solid #ddd; */
   border-right: 1px solid #7cb9e8;
   transition: all 0.2 linear;
 
@@ -183,15 +207,15 @@ export const StyledThBody = styled.th`
 
 export const StyledTr = styled.tr`
   &:nth-child(even) {
-    /* background-color: #f2f2f2; */
     background-color: #f0f8ff;
   }
 `;
 
 export const StyledTableCake = styled.table`
   border-spacing: 0;
-  /* border: 1px solid #c0c0c0; */
-  border: 1px solid #7cb9e8;
+  border-right: 1px solid #7cb9e8;
+  border-left: 1px solid #7cb9e8;
+  border-bottom: 1px solid #7cb9e8;
   margin: 15px 30px;
   width: 400px;
   transition: all 0.2 linear;
@@ -202,15 +226,12 @@ export const StyledTableCake = styled.table`
 `;
 
 export const StyledTrTitleCake = styled.tr`
-  /* background-color: #c0c0c0; */
-  /* background-color: #7cb9e8; */
   background-color: #7cb9e8;
   transition: all 0.2 linear;
 `;
 
 export const StyledTBody = styled.tbody`
   overflow-y: scroll;
-  /* height: 250px; */
 `;
 
 export const StyledAddButton = styled.button`
@@ -245,4 +266,10 @@ export const StyledTablesContainer = styled.div`
     flex-direction: column;
     width: 300px;
   }
+`;
+
+export const StyledIndexContainer = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 `;
