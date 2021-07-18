@@ -164,7 +164,11 @@ export default function CreateIngredient(props: Props) {
 
 export async function getStaticProps() {
   const res = await fetch(
-    `${process.env.VERCEL_URL || 'http://localhost:3000'}/api/ingredients`
+    `${
+      process.env.VERCEL_URL
+        ? 'https://' + process.env.VERCEL_URL
+        : 'http://localhost:3000'
+    }/api/ingredients`
   );
   const ingredients = await res.json();
 
