@@ -40,12 +40,9 @@ export default function CreateIngredient(props: Props) {
   const [uni, setUni] = useState('g');
   const [filter, setFilter] = useState('');
 
-  const { data, error, isLoading } = useFetch(
-    '/api/ingredients',
-    props.ingredients
-  );
+  const { data, error, isLoading } = useFetch('/api/ingredients');
 
-  const handleClick = async (e: any) => {
+  const handleClick = async () => {
     if (!ingredient) {
       return;
     }
@@ -162,17 +159,17 @@ export default function CreateIngredient(props: Props) {
   );
 }
 
-export async function getStaticProps() {
-  const res = await fetch(
-    `${
-      process.env.VERCEL_URL
-        ? 'https://' + process.env.VERCEL_URL
-        : 'http://localhost:3000'
-    }/api/ingredients`
-  );
-  const ingredients = await res.json();
+// export async function getStaticProps() {
+//   const res = await fetch(
+//     `${
+//       process.env.VERCEL_URL
+//         ? 'https://' + process.env.VERCEL_URL
+//         : 'http://localhost:3000'
+//     }/api/ingredients`
+//   );
+//   const ingredients = await res.json();
 
-  return {
-    props: { ingredients },
-  };
-}
+//   return {
+//     props: { ingredients },
+//   };
+// }
