@@ -9,7 +9,7 @@ export default async function getAllCakes(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const cake = await getCakes();
+  // const cake = await getCakes();
 
-  res.status(200).json(cake);
+  res.status(200).json({ ey: 'hello' });
 }

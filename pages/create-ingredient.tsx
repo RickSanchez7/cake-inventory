@@ -25,6 +25,7 @@ import {
 } from '../styles/style';
 import Loader from 'react-loader-spinner';
 import { openDB } from '../src/openDB';
+import { newIngredient } from '../utils/constantes';
 
 type DataProps = {
   id: number;
@@ -55,13 +56,20 @@ export default function CreateIngredient(props: Props) {
       uni,
     });
 
+    // const db = await openDB();
+
+    // const data = await db.all(
+    //   `INSERT INTO Ingredientes (nome_ingrediente, unidade) VALUES (?, ?)`,
+    //   [ingredient, uni]
+    // );
+
     if (data === 'OK') {
       trigger('/api/ingredients');
       setIngredient('');
       setUni('g');
       toast.success('🚀 Ingrediente criado com Sucesso!', {
         position: toast.POSITION.TOP_CENTER,
-        autoClose: 3000,
+        autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -71,7 +79,7 @@ export default function CreateIngredient(props: Props) {
     } else {
       toast.error('🧨 Ocorreu um erro!', {
         position: toast.POSITION.TOP_CENTER,
-        autoClose: 3000,
+        autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,

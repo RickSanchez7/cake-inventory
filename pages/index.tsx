@@ -113,7 +113,7 @@ export default function Home() {
       trigger('/api/ingredients-count');
       toast.success('🚀 Bolo eliminado com sucesso!', {
         position: toast.POSITION.TOP_CENTER,
-        autoClose: 3000,
+        autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -123,7 +123,7 @@ export default function Home() {
     } else {
       toast.error('🧨 Ocorreu um erro!', {
         position: toast.POSITION.TOP_CENTER,
-        autoClose: 3000,
+        autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
