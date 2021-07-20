@@ -26,9 +26,8 @@ import {
   StyledTr,
   StyledTrTitleCake,
 } from '../styles/style';
-import useSWR from 'swr';
 import Loader from 'react-loader-spinner';
-import { SmallTable } from '../components/SmallTable';
+import { url } from '.';
 
 type DataProps = {
   id: number;
@@ -58,14 +57,18 @@ export default function CreateCake(props: Props) {
   const [quantidade, setQuantidade] = useState('');
   const [filter, setFilter] = useState('');
 
-  const { data: ingredients, error, isLoading } = useFetch('/api/ingredients');
+  const {
+    data: ingredients,
+    error,
+    isLoading,
+  } = useFetch(`${url}/api/ingredients`);
 
   const handleCake = async () => {
     if (!cakeName) return;
     if (fullCake.length === 0) return;
 
     try {
-      const { data } = await axios.post('api/new-cake', {
+      const { data } = await axios.post(`${url}/api/new-cake`, {
         data: { cake_name: cakeName, ingredients: fullCake },
       });
       if (data === 'OK') {
@@ -230,17 +233,11 @@ export default function CreateCake(props: Props) {
   );
 }
 
-// export async function getStaticProps() {
-//   const res = await fetch(
-//     `${
-//       process.env.VERCEL_URL
-//         ? 'https://' + process.env.VERCEL_URL
-//         : 'http://localhost:3000'
-//     }/api/ingredients`
-//   );
-//   const ingredients = await res.json();
+export async function getStaticProps() {
+  const res = await fetch(`${url}/api/ingredients`);
+  const ingredients = await res.json();
 
-//   return {
-//     props: { ingredients },
-//   };
-// }
+  return {
+    props: { ingredients },
+  };
+}

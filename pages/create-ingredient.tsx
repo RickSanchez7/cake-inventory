@@ -24,8 +24,7 @@ import {
   StyledTrTitle,
 } from '../styles/style';
 import Loader from 'react-loader-spinner';
-import { openDB } from '../src/openDB';
-import { newIngredient } from '../utils/constantes';
+import { url } from '.';
 
 type DataProps = {
   id: number;
@@ -43,7 +42,7 @@ export default function CreateIngredient(props: Props) {
   const [filter, setFilter] = useState('');
 
   const { data, error, isLoading } = useFetch(
-    '/api/ingredients',
+    `${url}/api/ingredients`,
     props.ingredients
   );
 
@@ -51,20 +50,13 @@ export default function CreateIngredient(props: Props) {
     if (!ingredient) {
       return;
     }
-    const { data } = await axios.post('/api/new-ingredient', {
+    const { data } = await axios.post(`${url}/api/new-ingredient`, {
       ingredient,
       uni,
     });
 
-    // const db = await openDB();
-
-    // const data = await db.all(
-    //   `INSERT INTO Ingredientes (nome_ingrediente, unidade) VALUES (?, ?)`,
-    //   [ingredient, uni]
-    // );
-
     if (data === 'OK') {
-      trigger('/api/ingredients');
+      trigger(`${url}/api/ingredients`);
       setIngredient('');
       setUni('g');
       toast.success('🚀 Ingrediente criado com Sucesso!', {
@@ -91,12 +83,15 @@ export default function CreateIngredient(props: Props) {
 
   const deleteIngredient = async (id: number) => {
     console.log(id);
-    const { data: dataResponse } = await axios.post('/api/delete-ingredient', {
-      id,
-    });
+    const { data: dataResponse } = await axios.post(
+      `${url}/api/delete-ingredient`,
+      {
+        id,
+      }
+    );
 
     if (dataResponse === 'OK') {
-      trigger('/api/ingredients');
+      trigger(`${url}/api/ingredients`);
     }
   };
 
@@ -172,20 +167,8 @@ export default function CreateIngredient(props: Props) {
 }
 
 export async function getStaticProps() {
-  // const res = await fetch(
-  //   `${
-  //     process.env.VERCEL_URL
-  //       ? 'https://' + process.env.VERCEL_URL
-  //       : 'http://localhost:3000'
-  //   }/api/ingredients`
-  // );
-  // const ingredients = await res.json();
-
-  const db = await openDB();
-
-  const ingredients = await db.all('SELECT * FROM Ingredientes');
-
-  console.log(ingredients);
+  const res = await fetch(`${url}/api/ingredients-count`);
+  const ingredients = await res.json();
 
   return {
     props: { ingredients },

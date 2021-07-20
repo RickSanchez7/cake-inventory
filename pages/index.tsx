@@ -12,8 +12,6 @@ import {
   StyledDeleteButton,
   StyledIndexContainer,
   StyledIngredientTitle,
-  StyledInputsContainer,
-  StyledLoaderContainer,
   StyledRemoveButton,
   StyledTable,
   StyledTablesContainer,
@@ -45,11 +43,16 @@ type IngredientProp = {
   unidade?: string;
 };
 
+export const url =
+  process.env.NODE_ENV === 'production'
+    ? 'https://and-i-bake.herokuapp.com'
+    : ' http://localhost:5000';
+
 export default function Home() {
   const { data: ingredientsList, error: errorList } = useFetch<
     IngredientProp[]
-  >('/api/ingredients-count');
-  const { data: getCake, error: err2 } = useFetch('/api/cakes-count');
+  >(`${url}/api/ingredients-count`);
+  const { data: getCake, error: err2 } = useFetch(`${url}/api/cakes-count`);
   const [cakeQuant, setCakeQuant] = useState<CakesProp[]>([]);
 
   const [list, setList] = useState<IngredientProp[]>([]);
@@ -63,13 +66,13 @@ export default function Home() {
 
     const quantity = cakeQuant.filter(x => x.id === id)[0].quantidade;
 
-    const { data } = await axios.post('/api/update-quantity', {
+    const { data } = await axios.post(`${url}/api/update-quantity`, {
       id,
       quantity: quantity + 1,
     });
 
     if (data === 'OK') {
-      trigger('/api/ingredients-count');
+      trigger(`${url}/api/ingredients-count`);
     }
   };
   const decreaseQuant = async (id: number) => {
@@ -83,13 +86,13 @@ export default function Home() {
 
     const quantity = cakeQuant.filter(x => x.id === id)[0].quantidade;
 
-    const { data } = await axios.post('/api/update-quantity', {
+    const { data } = await axios.post(`${url}/api/update-quantity`, {
       id,
       quantity: quantity - 1,
     });
 
     if (data === 'OK') {
-      trigger('/api/ingredients-count');
+      trigger(`${url}/api/ingredients-count`);
     }
   };
 
@@ -104,13 +107,13 @@ export default function Home() {
   }, [ingredientsList]);
 
   const handleCakeDelete = async (cake_name: string) => {
-    const { data } = await axios.delete('api/cake', {
+    const { data } = await axios.delete(`${url}/api/cake`, {
       data: { cake_name },
     });
 
     if (data === 'OK') {
-      trigger('/api/cakes-count');
-      trigger('/api/ingredients-count');
+      trigger(`${url}/api/cakes-count`);
+      trigger(`${url}/api/ingredients-count`);
       toast.success('🚀 Bolo eliminado com sucesso!', {
         position: toast.POSITION.TOP_CENTER,
         autoClose: 2000,
