@@ -106,9 +106,9 @@ export default function Home() {
     }
   }, [ingredientsList]);
 
-  const handleCakeDelete = async (cake_name: string) => {
-    const { data } = await axios.delete(`${url}/api/cake`, {
-      data: { cake_name },
+  const handleCakeDelete = async (cake_name: string, cakeId: number) => {
+    const { data } = await axios.post(`${url}/api/cake`, {
+      data: { cake_name, id: cakeId },
     });
 
     if (data === 'OK') {
@@ -168,7 +168,7 @@ export default function Home() {
                         <MdAdd />
                       </StyledAddButton>
                       <StyledDeleteButton
-                        onClick={() => handleCakeDelete(i.nome_bolo)}
+                        onClick={() => handleCakeDelete(i.nome_bolo, i.id)}
                       >
                         <MdClear />
                       </StyledDeleteButton>
