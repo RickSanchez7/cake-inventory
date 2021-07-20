@@ -44,7 +44,7 @@ type IngredientProp = {
 };
 
 export const url =
-  process.env.NODE_ENV === 'production'
+  process.env.NEXT_PUBLIC_VERCEL_ENV === 'production'
     ? 'https://and-i-bake.herokuapp.com'
     : ' http://localhost:5000';
 
