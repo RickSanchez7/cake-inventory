@@ -148,7 +148,9 @@ export default function CreateIngredient(props: Props) {
         </thead>
         <tbody>
           {data
-            ?.filter((d: DataProps) => d.nome_ingrediente.includes(filter))
+            ?.filter((d: DataProps) =>
+              d.nome_ingrediente.toLowerCase().includes(filter.toLowerCase())
+            )
             .map((i: DataProps) => (
               <StyledTr key={i.id}>
                 <StyledThBody>{i.nome_ingrediente}</StyledThBody>

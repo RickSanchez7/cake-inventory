@@ -121,6 +121,8 @@ export default function CreateCake(props: Props) {
     setFullCake(ingr => ingr.filter(x => x.ingredient !== ing));
   };
 
+  console.log('filter', filter);
+
   if (isLoading) {
     return (
       <StyledLoaderContainer>
@@ -179,7 +181,9 @@ export default function CreateCake(props: Props) {
           </thead>
           <StyledTBody>
             {ingredients
-              ?.filter((d: DataProps) => d.nome_ingrediente.includes(filter))
+              ?.filter((d: DataProps) =>
+                d.nome_ingrediente.toLowerCase().includes(filter.toLowerCase())
+              )
               .map((i: DataProps) => {
                 return (
                   <StyledTr key={i.id}>
