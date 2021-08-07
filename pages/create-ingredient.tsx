@@ -169,7 +169,7 @@ export default function CreateIngredient(props: Props) {
 }
 
 export async function getStaticProps() {
-  const res = await fetch(`${url}/api/ingredients-count`);
+  const res = await fetch(`${url}/api/ingredients`);
   const ingredients = await res.json();
 
   return {
