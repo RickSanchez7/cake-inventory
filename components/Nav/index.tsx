@@ -3,6 +3,7 @@ import Link from 'next/link';
 
 import { useState } from 'react';
 import { GiChocolateBar, GiCupcake, GiStairsCake } from 'react-icons/gi';
+import { SiCakephp } from 'react-icons/si';
 
 import {
   NavbarContainer,
@@ -27,6 +28,12 @@ export function Nav() {
       header: 'Criar Ingrediente',
       link: '/create-ingredient',
       icon: <GiChocolateBar />,
+    },
+    {
+      id: 4,
+      header: 'Lista de Bolos',
+      link: '/cake-list',
+      icon: <SiCakephp />,
     },
   ];
 

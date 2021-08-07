@@ -122,9 +122,9 @@ export const StyledButton = styled.button`
 
 export const StyledDeleteButton = styled.button`
   display: flex;
-  padding: 5px 12px;
+  padding: 4px 10px;
   border-radius: 5px;
-  margin: 2px auto;
+  margin: 0 auto;
   background-color: #ff0000;
   align-items: center;
   justify-content: center;
@@ -272,4 +272,57 @@ export const StyledIndexContainer = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
+`;
+
+export const StyledResponsiveTable = styled.div`
+  padding: 10px;
+  min-width: 550px;
+`;
+
+export const StyledResponsiveTableTitleContainer = styled.div`
+  border: 1px solid #7cb9e8;
+  border-bottom: 1px solid #f0f8ff;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 18px;
+  background-color: #7cb9e8;
+  color: '#fff';
+`;
+
+export const StyledResponsiveTableTitle = styled.div`
+  margin-left: 10px;
+  color: #505050;
+  font-family: Poppins;
+`;
+
+export const StyledResponsiveTableContentContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  padding-left: 10px;
+  border-right: 1px solid #7cb9e8;
+  border-left: 1px solid #7cb9e8;
+
+  &:last-child {
+    border-bottom: 1px solid #7cb9e8;
+  }
+`;
+
+export const StyledResponsiveTableIng = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 0 15px;
+`;
+
+export const StyledResponsiveTableIngTitle = styled.h2`
+  color: #000;
+  font-family: Poppins;
+  font-size: 16px;
+`;
+
+export const StyledResponsiveTableIngText = styled.p`
+  color: #505050;
+  font-family: Poppins;
+  margin-top: 0px;
 `;

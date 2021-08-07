@@ -1,6 +1,4 @@
 import Head from 'next/head';
-import Image from 'next/image';
-import styles from '../styles/Home.module.css';
 import { useFetch } from '../hooks/useFetch';
 import { v4 as uuidv4 } from 'uuid';
 import { useEffect, useState } from 'react';
@@ -9,7 +7,6 @@ import { trigger } from 'swr';
 import Loader from 'react-loader-spinner';
 import {
   StyledAddButton,
-  StyledDeleteButton,
   StyledIndexContainer,
   StyledIngredientTitle,
   StyledRemoveButton,
@@ -20,8 +17,7 @@ import {
   StyledTr,
   StyledTrTitle,
 } from '../styles/style';
-import { MdAdd, MdClear, MdRemove } from 'react-icons/md';
-import { toast } from 'react-toastify';
+import { MdAdd, MdRemove } from 'react-icons/md';
 
 type CakeProp = {
   nome_bolo: string;
@@ -106,36 +102,6 @@ export default function Home() {
     }
   }, [ingredientsList]);
 
-  const handleCakeDelete = async (cake_name: string, cakeId: number) => {
-    const { data } = await axios.post(`${url}/api/cake`, {
-      data: { cake_name, id: cakeId },
-    });
-
-    if (data === 'OK') {
-      trigger(`${url}/api/cakes-count`);
-      trigger(`${url}/api/ingredients-count`);
-      toast.success('🚀 Bolo eliminado com sucesso!', {
-        position: toast.POSITION.TOP_CENTER,
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    } else {
-      toast.error('🧨 Ocorreu um erro!', {
-        position: toast.POSITION.TOP_CENTER,
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }
-  };
-
   return (
     <StyledIndexContainer>
       <Head>
@@ -167,11 +133,6 @@ export default function Home() {
                       <StyledAddButton onClick={() => increaseQuant(i.id)}>
                         <MdAdd />
                       </StyledAddButton>
-                      <StyledDeleteButton
-                        onClick={() => handleCakeDelete(i.nome_bolo, i.id)}
-                      >
-                        <MdClear />
-                      </StyledDeleteButton>
                     </div>
                   </StyledThBody>
                 </StyledTr>

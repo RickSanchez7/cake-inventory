@@ -28,6 +28,7 @@ import {
 } from '../styles/style';
 import Loader from 'react-loader-spinner';
 import { url } from '.';
+import { trigger } from 'swr';
 
 type DataProps = {
   id: number;
@@ -72,6 +73,7 @@ export default function CreateCake(props: Props) {
         data: { cake_name: cakeName, ingredients: fullCake },
       });
       if (data === 'OK') {
+        trigger(`${url}/api/cakes`);
         setFullCake([]);
         setCakeName('');
         toast.success('🚀 Bolo criado com Sucesso!', {
